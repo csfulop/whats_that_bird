@@ -7,7 +7,7 @@ Based on:
     https://keras.io/applications/#usage-examples-for-image-classification-models
 
 Usage:
-    resnet.py <image path 1> ...
+    python resnet.py <image>...
 """
 
 #######################################
