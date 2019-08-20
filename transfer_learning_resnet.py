@@ -4,21 +4,28 @@ Train the model to recognize birds.
 
 Based on:
     https://www.kaggle.com/dansbecker/transfer-learning
+    https://www.kaggle.com/dansbecker/data-augmentation
 """
 
 from tensorflow.python.keras.applications.resnet50 import preprocess_input
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 
 image_size = 224
-data_generator = ImageDataGenerator(preprocessing_function=preprocess_input)
+data_generator_no_aug = ImageDataGenerator(preprocessing_function=preprocess_input)
+data_generator_with_aug = ImageDataGenerator(preprocessing_function=preprocess_input,
+                                             horizontal_flip=True,
+                                             width_shift_range=0.2,
+                                             height_shift_range=0.2,
+                                             rotation_range=15,
+                                             shear_range=0.1,
+                                             zoom_range=0.2)
 
-train_generator = data_generator.flow_from_directory(
+train_generator = data_generator_with_aug.flow_from_directory(
     './bird_photos/train',
     target_size=(image_size, image_size),
-    batch_size=20,
     class_mode='categorical')
 
-validation_generator = data_generator.flow_from_directory(
+validation_generator = data_generator_with_aug.flow_from_directory(
     './bird_photos/test',
     target_size=(image_size, image_size),
     class_mode='categorical')
@@ -49,6 +56,6 @@ bird_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['
 bird_model.fit_generator(
     train_generator,
     steps_per_epoch=10,
-    epochs=10,
+    epochs=20,
     validation_data=validation_generator,
     validation_steps=1)
