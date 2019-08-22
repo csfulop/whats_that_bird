@@ -6,9 +6,10 @@ Based on:
     https://www.kaggle.com/dansbecker/transfer-learning
     https://www.kaggle.com/dansbecker/data-augmentation
 """
+import json
 
-from tensorflow.python.keras.applications.resnet50 import preprocess_input
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
+from keras.applications.resnet50 import preprocess_input
+from keras.preprocessing.image import ImageDataGenerator
 
 image_size = 224
 data_generator_with_aug = ImageDataGenerator(preprocessing_function=preprocess_input,
@@ -36,11 +37,14 @@ validation_generator = data_generator_with_aug.flow_from_directory(
 
 assert train_generator.num_classes == validation_generator.num_classes, 'training and validation classes must match'
 
+with open('birds_resnet50_classes.json', 'w') as f:
+    json.dump(train_generator.class_indices, f, indent=2)
+
 #######################################
 
-from tensorflow.python.keras.applications import ResNet50
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from keras.applications import ResNet50
+from keras.models import Sequential
+from keras.layers import Dense
 
 num_classes = train_generator.num_classes
 
@@ -63,3 +67,5 @@ bird_model.fit_generator(
     epochs=20,
     validation_data=validation_generator,
     validation_steps=1)
+
+bird_model.save('birds_resnet50_model.h5')
