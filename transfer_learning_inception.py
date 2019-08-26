@@ -33,7 +33,7 @@ validation_generator = data_generator_with_aug.flow_from_directory(
 
 assert train_generator.num_classes == validation_generator.num_classes, 'training and validation classes must match'
 
-with open('birds_incpetion_classes.json', 'w') as f:
+with open('birds_inception_classes.json', 'w') as f:
     json.dump(train_generator.class_indices, f, indent=2)
 
 #######################################
